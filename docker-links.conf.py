@@ -2,6 +2,7 @@ postgres = os.getenv('SENTRY_POSTGRES_HOST') or (os.getenv('POSTGRES_PORT_5432_T
 mysql = os.getenv('SENTRY_MYSQL_HOST') or (os.getenv('MYSQL_PORT_3306_TCP_ADDR') and 'mysql')
 redis = os.getenv('SENTRY_REDIS_HOST') or (os.getenv('REDIS_PORT_6379_TCP_ADDR') and 'redis')
 memcached = os.getenv('SENTRY_MEMCACHED_HOST') or (os.getenv('MEMCACHED_PORT_11211_TCP_ADDR') and 'memcached')
+postfix = os.getenv('SENTRY_POSTFIX_HOST') or (os.getenv('POSTFIX_PORT_25_TCP_PORT') and 'postfix')
 
 if postgres:
     DATABASES = {
@@ -111,6 +112,33 @@ if redis:
     BROKER_URL = 'redis://' + redis + ':' + redis_port + '/' + redis_db
 else:
     raise Exception('Error: REDIS_PORT_6379_TCP_ADDR (or SENTRY_REDIS_HOST) is undefined, did you forget to `--link` a redis container?')
+
+if postfix:
+    #EMAIL_BACKEND = os.getenv('SENTRY_EMAIL_BACKEND') or 'django.core.mail.backends.console.EmailBackend')
+    EMAIL_HOST = (
+        os.getenv('SENTRY_EMAIL_HOST')
+        or os.getenv('POSTFIX_PORT_25_TCP_ADDR')
+        or 'localhost'
+    )
+    EMAIL_HOST_PASSWORD = (
+        os.getenv('SENTRY_EMAIL_HOST_PASSWORD')
+        or os.getenv('POSTFIX_SMTP_PASSWORD')
+        or ''
+    )
+    EMAIL_HOST_USER = (
+        os.getenv('SENTRY_EMAIL_HOST_USER')
+        or os.getenv('POSTFIX_SMTP_USER')
+        or ''
+    )
+    EMAIL_PORT = (
+        os.getenv('SENTRY_EMAIL_PORT')
+        or os.getenv('POSTFIX_PORT_25_TCP_PORT')
+        or 25
+    )
+    EMAIL_USE_TLS = os.getenv('SENTRY_EMAIL_USE_TLS')
+
+# The email address to send on behalf of
+SERVER_EMAIL = os.getenv('SENTRY_SERVER_EMAIL') or 'root@localhost'
 
 if SENTRY_URL_PREFIX == 'http://sentry.example.com':
     del SENTRY_URL_PREFIX
