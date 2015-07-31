@@ -140,5 +140,6 @@ if postfix:
 # The email address to send on behalf of
 SERVER_EMAIL = os.getenv('SENTRY_SERVER_EMAIL') or 'root@localhost'
 
-if SENTRY_URL_PREFIX == 'http://sentry.example.com':
-    del SENTRY_URL_PREFIX
+SENTRY_URL_PREFIX = os.getenv('SENTRY_URL_PREFIX') or ''
+
+SENTRY_ADMIN_EMAIL = os.getenv('SENTRY_ADMIN_EMAIL') or ''
