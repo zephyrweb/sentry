@@ -17,6 +17,8 @@ ENV SENTRY_VERSION 7.7.0
 
 RUN pip install sentry==$SENTRY_VERSION
 
+RUN pip install sentry-jira
+
 RUN mkdir -p /home/user/.sentry \
 	&& chown -R user:user /home/user/.sentry
 
